@@ -44,7 +44,7 @@ class Style:
 
 class PlotManager:
     '''This class manages multiple Shape objects and their plotting.'''
-    def __init__(self, hist_cfg, plot_dir, only_cat=[], style_cfg=style_cfg, data_key="DATA", log=False, density=False, save=True) -> None:
+    def __init__(self, hist_cfg, plot_dir, only_cat=[''], style_cfg=style_cfg, data_key="DATA", log=False, density=False, save=True) -> None:
         self.shape_objects = {}
         self.plot_dir = plot_dir
         self.only_cat = only_cat
@@ -72,7 +72,7 @@ class Shape:
     - name: name that identifies the Shape object.
     - style_cfg: dictionary with style and plotting options.
     - data_key: prefix for data samples (e.g. default in PocketCoffea: "DATA_SingleEle")'''
-    def __init__(self, h_dict, name, plot_dir, only_cat=[], style_cfg=style_cfg, data_key="DATA", log=False, density=False) -> None:
+    def __init__(self, h_dict, name, plot_dir, only_cat=[''], style_cfg=style_cfg, data_key="DATA", log=False, density=False) -> None:
         self.h_dict = h_dict
         self.name = name
         self.plot_dir = plot_dir
