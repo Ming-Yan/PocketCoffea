@@ -89,5 +89,9 @@ style_cfg = {
         'SingleTop' : (1.0, 0.4, 0.4), #red
         'ST' : (1.0, 0.4, 0.4), #red
         'WJetsToLNu_HT' : '#cc99ff', #violet
+    },
+    "lumi":
+    {
+        "2018":6940. #/pb, 2018RunC
     }
 }

@@ -25,10 +25,14 @@ class Style:
             setattr(self, key, item)
         self.has_labels = False
         self.has_samples_map = False
+        self.has_lumi = False
         if "labels" in style_cfg:
             self.has_labels = True
         if "samples_map" in style_cfg:
             self.has_samples_map = True
+        if "lumi" in style_cfg:
+            self.has_lumi = True
+            self.lumi = style_cfg["lumi"]
         self.set_defaults()
 
     def set_defaults(self):
@@ -74,6 +78,8 @@ class Shape:
         self.plot_dir = plot_dir
         self.only_cat = only_cat
         self.style = Style(style_cfg)
+        if self.style.has_lumi:
+            self.lumi_fraction = {year: l / lumi[year]['tot'] for year, l in self.style.lumi.items()}
         self.data_key = data_key
         self.log = log
         self.density = density
@@ -355,7 +361,7 @@ class Shape:
         self.get_datamc_ratio()
         if ax:
             self.rax = rax
-        self.rax.errorbar(self.xcenters, self.ratio, yerr=self.ratio_unc, **self.style.opts_data)
+        self.rax.errorbar(self.xcenters, self.ratio, yerr=abs(self.ratio_unc), **self.style.opts_data)
         self.format_figure(ratio=True)
 
     def plot_systematic_uncertainty(self, ratio=False, ax=None):
@@ -397,7 +403,7 @@ class Shape:
             self.rax = rax
         if (not self.is_mc_only) & (not self.is_data_only):
             self.plot_mc()
-            self.plot_data(year)
+            self.plot_data()
             if syst:
                 self.plot_systematic_uncertainty()
         elif self.is_mc_only:
@@ -405,10 +411,10 @@ class Shape:
             if syst:
                 self.plot_systematic_uncertainty()
         elif self.is_data_only:
-            self.plot_data(year)
+            self.plot_data()
 
         if ratio:
-            self.plot_datamc_ratio(year)
+            self.plot_datamc_ratio()
             if syst:
                 self.plot_systematic_uncertainty(ratio)
 
@@ -583,7 +589,7 @@ class SystUnc:
             up_is_up = err_up > 0
             down_is_down = err_down < 0
             # Compute the flag to check if the uncertainty is one-sided, i.e. when both variations are up or down
-            is_onesided = (up_is_up ^ down_is_down)
+            is_onesided = up_is_up ^ down_is_down
 
             # Sum in quadrature of the systematic uncertainties taking into account if the uncertainty is one- or double-sided
             err2_up_twosided = np.where(up_is_up, err_up**2, err_down**2)
